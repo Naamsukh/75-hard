@@ -60,10 +60,25 @@ def inject_custom_css():
             opacity: 0.9;
             transform: translateY(-1px);
         }}
-        /* Hide Streamlit footer and hamburger for cleaner look */
+        /* Hide Streamlit footer and main menu for cleaner look */
         #MainMenu {{ visibility: hidden; }}
         footer {{ visibility: hidden; }}
-        header {{ visibility: hidden; }}
+        /* Hide header on desktop, but keep it visible on mobile for sidebar toggle */
+        @media (min-width: 769px) {{
+            header {{ visibility: hidden; }}
+        }}
+        /* Ensure sidebar toggle button is always visible on mobile */
+        @media (max-width: 768px) {{
+            header[data-testid="stHeader"] {{
+                visibility: visible !important;
+                display: block !important;
+            }}
+            /* Style the hamburger button to match theme */
+            header button[kind="header"] {{
+                visibility: visible !important;
+                color: {PRIMARY} !important;
+            }}
+        }}
         /* Dataframe styling - alternating rows */
         .stDataFrame {{
             border-radius: 8px;
