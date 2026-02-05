@@ -1,15 +1,27 @@
 """Shared helpers for 75 Hard Challenge tracker (streak, completion)."""
 
+import math
 from datetime import date, timedelta
 from typing import Any
+
+
+def _to_number(val: Any, default: float = 0) -> float:
+    """Coerce value to number; treat None and NaN as default."""
+    if val is None:
+        return default
+    try:
+        x = float(val)
+        return default if math.isnan(x) else x
+    except (TypeError, ValueError):
+        return default
 
 
 def completion_score(row: dict[str, Any]) -> bool:
     """True if day meets 75 Hard style: 2 workouts, water >= 3 L, reading >= 10 min."""
     w1 = (row.get("workout_1") or row.get("workout_1_duration")) is not None
     w2 = (row.get("workout_2") or row.get("workout_2_duration")) is not None
-    water = row.get("water_intake") is not None and float(row.get("water_intake") or 0) >= 3.0
-    reading = row.get("reading_time") is not None and int(row.get("reading_time") or 0) >= 10
+    water = _to_number(row.get("water_intake"), 0) >= 3.0
+    reading = _to_number(row.get("reading_time"), 0) >= 10
     return w1 and w2 and water and reading
 
 
